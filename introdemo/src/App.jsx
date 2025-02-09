@@ -1,16 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
-const Button = (props) => {
-  return (
-    <button onClick={props.onClick}>
-      {props.text}
-    </button>
-  )
-}
 
-const Display = (props) => {
+const Button = ({ onClick, text }) => (
+  //onClick naming is actually advised by react docs(can have any name for the function )
+  <button onClick={onClick}>
+    {text}
+  </button>
+)
+
+const Display = ({ counter }) => {
+  //since only returning one element, we can omit the return statement,(same as used in button)
   return (
-    <div>{props.counter}</div>
+    <div>{counter}</div>
   )
 }
 
