@@ -1,10 +1,25 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 import Note from './components/Note'
 
-const App = (props) => {
-  const [notes, setNotes] = useState(props.notes)
+const App = () => {
+  const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('')
-  const [showAll, setShowAll] = useState(true) // Initially show all notes 
+  const [showAll, setShowAll] = useState(true)
+
+  //Installed npm package axios to make HTTP requests from the frontend to the backend server
+  // Installed json-server and also chnaged the package.json file to run the json-server on port 3001 
+//   Why use useEffect here?
+// ✔ Ensures data is fetched only when the component mounts.
+// ✔ Without it, fetch would run on every render (bad performance!).
+  useEffect(() => { //Effect Hooks are usually used when we want to fetch data from an API or perform some operation after the component is rendered.
+    console.log('effect')
+    axios.get('http://localhost:3001/notes').then((response) => {
+      console.log('promise fulfilled')
+      setNotes(response.data)
+    })
+  }, [])
+  console.log('render', notes.length, 'notes')
 
   const addNote = (event) => {
     event.preventDefault()
@@ -46,8 +61,3 @@ const App = (props) => {
 }
 
 export default App
-//Basically neNote is the state that holds the value of the input field. 
-//handleNoteChange is the event handler that updates the state of newNote whenever the input field changes. 
-//addNote is the event handler that adds a new note to the notes state whenever the form is submitted. 
-//The notesToShow variable is used to determine which notes to display based on the value of the showAll state. 
-//Finally, the App component renders the list of notes, a form for adding new notes, and a button for toggling between showing all notes and showing only important notes.
