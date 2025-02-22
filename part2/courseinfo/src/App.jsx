@@ -28,6 +28,15 @@ const Total = ({value1, value2, value3}) => {
   )
 }
 
+const Course = ({course}) => {
+  return (
+    <div>
+      <Header course={course.name} />
+      <Content parts={course.parts}/>
+      <Total value1={course.parts[0].exercises} value2={course.parts[1].exercises} value3={course.parts[2].exercises} />
+    </div>
+  )
+}
 
 const App = () => {
   const course = {
@@ -50,9 +59,7 @@ const App = () => {
   
   return (
     <div>
-      <Header course={course.name} />
-      <Content parts={course.parts}/>
-      <Total value1={course.parts[0].exercises} value2={course.parts[1].exercises} value3={course.parts[2].exercises} />
+      <Course course={course} />
     </div>
   )
 }
