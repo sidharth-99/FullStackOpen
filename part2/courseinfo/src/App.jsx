@@ -23,9 +23,10 @@ const Content = ({parts}) => {//Loops in the future
   )
 }
 
-const Total = ({value1, value2, value3, value4}) => {
+const Total = ({parts}) => {
+  const total = parts.reduce((initialValue, part) =>initialValue +part.exercises, 0)
   return (
-    <p>Number of exercises {value1 + value2 + value3 +value4}</p>
+    <p>Number of exercises {total}</p>
   )
 }
 
@@ -34,7 +35,7 @@ const Course = ({course}) => {
     <div>
       <Header course={course.name} />
       <Content parts={course.parts}/>
-      <Total value1={course.parts[0].exercises} value2={course.parts[1].exercises} value3={course.parts[2].exercises} value4={course.parts[3].exercises}/>
+      <Total parts={course.parts} />
     </div>
   )
 }
