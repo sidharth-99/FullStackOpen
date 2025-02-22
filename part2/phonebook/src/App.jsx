@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import personService from './services/Persons'
+import Notification from './components/Notification'
 
 const Filter = ({ newSearchInput, handleSeacrhInputChange }) => {
   return (
@@ -41,6 +42,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newSearchInput, setnewSearchInput] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [successMessage, setSuccessMessage] = useState(null)
 
   useEffect(() => {
     personService.getAll().then((initialNotes) => {
@@ -51,7 +54,7 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault()
     const personObject = {
-      id: persons.length + 1,
+      id: String(persons.length + 1),//Will cause Error if datatype is not string
       name: newName,
       number: newNumber
     }
@@ -65,12 +68,20 @@ const App = () => {
       })
       setNewName('')
       setNewNumber('')
+      setSuccessMessage(`Updated ${newName}`)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
       return
     }
     personService.create(personObject).then((returnedPerson) => {
       setPersons(persons.concat(returnedPerson))
       setNewName('')
       setNewNumber('')
+      setSuccessMessage(`Added ${newName}`)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
     }
     )
   }
@@ -109,6 +120,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
+      <Notification message={successMessage} />
       <Filter newSearchInput={newSearchInput} handleSeacrhInputChange={handleSeacrhInputChange}/>
       <h2>Add a new</h2>
       <PersonForm addPerson={addPerson} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} />
