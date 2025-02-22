@@ -51,11 +51,20 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault()
     const personObject = {
+      id: persons.length + 1,
       name: newName,
       number: newNumber
     }
     if (persons.find((person) => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`)
+      alert(`${newName} is already added to phonebook, replace the old number with a new one?`)
+      const person = persons.find((person) => person.name === newName)
+      const id = person.id
+      const newPerson = { ...person, number: newNumber }
+      personService.update(id, newPerson).then((returnedPerson) => {
+        setPersons(persons.map((person) => (person.id !== id ? person : returnedPerson)))
+      })
+      setNewName('')
+      setNewNumber('')
       return
     }
     personService.create(personObject).then((returnedPerson) => {
@@ -74,6 +83,12 @@ const App = () => {
       })
     }
   }
+
+  // const updatePerson = (id, newPerson) => {
+  //   personService.update(id, newPerson).then((returnedPerson) => {
+  //     setPersons(persons.map((person) => (person.id !== id ? person : returnedPerson)))
+  //   })
+  // }
 
   const handleNameChange = (event) => {
     setNewName(event.target.value)
@@ -96,7 +111,7 @@ const App = () => {
       <h2>Phonebook</h2>
       <Filter newSearchInput={newSearchInput} handleSeacrhInputChange={handleSeacrhInputChange}/>
       <h2>Add a new</h2>
-      <PersonForm addPerson={addPerson} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange}/>
+      <PersonForm addPerson={addPerson} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
       <Persons showPersons={showPersons} deletePerson={deletePerson}/>
     </div>
