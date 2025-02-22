@@ -1,36 +1,45 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import Note from './components/Note'
+import noteService from './services/notes'
 
 const App = () => {
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
 
-  //Installed npm package axios to make HTTP requests from the frontend to the backend server
-  // Installed json-server and also chnaged the package.json file to run the json-server on port 3001 
-//   Why use useEffect here?
-// ✔ Ensures data is fetched only when the component mounts.
-// ✔ Without it, fetch would run on every render (bad performance!).
-  useEffect(() => { //Effect Hooks are usually used when we want to fetch data from an API or perform some operation after the component is rendered.
-    console.log('effect')
-    axios.get('http://localhost:3001/notes').then((response) => {
-      console.log('promise fulfilled')
-      setNotes(response.data)
+  //We are using promise chaining to handle the response from the server
+  useEffect(() => {
+    noteService.getAll().then((initialNotes) => {
+      setNotes(initialNotes)
     })
   }, [])
-  console.log('render', notes.length, 'notes')
 
   const addNote = (event) => {
     event.preventDefault()
     const noteObject = {
       content: newNote,
       important: Math.random() > 0.5,
-      id: String(notes.length + 1),
     }
 
-    setNotes(notes.concat(noteObject))
-    setNewNote('')
+    noteService.create(noteObject).then((returnedNote) => {
+      setNotes(notes.concat(returnedNote))
+      setNewNote('')
+    })
+  }
+
+  const toggleImportanceOf = (id) => {
+    const note = notes.find((n) => n.id === id)
+    const changedNote = { ...note, important: !note.important }
+
+    noteService
+      .update(id, changedNote)
+      .then((returnedNote) => {
+        setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)))
+      })
+      .catch((error) => {
+        alert(`the note '${note.content}' was already deleted from server`)
+        setNotes(notes.filter((n) => n.id !== id))
+      })
   }
 
   const handleNoteChange = (event) => {
@@ -49,7 +58,11 @@ const App = () => {
       </div>
       <ul>
         {notesToShow.map((note) => (
-          <Note key={note.id} note={note} />
+          <Note
+            key={note.id}
+            note={note}
+            toggleImportance={() => toggleImportanceOf(note.id)}
+          />
         ))}
       </ul>
       <form onSubmit={addNote}>
@@ -61,3 +74,6 @@ const App = () => {
 }
 
 export default App
+
+//handleNoteChange is a controlled component, which means that the value of the input field is tied to the component's state.
+// npm run server to be done
