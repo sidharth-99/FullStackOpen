@@ -18,13 +18,14 @@ const Content = ({parts}) => {//Loops in the future
       <Part part={parts[0].name} exercises={parts[0].exercises} />
       <Part part={parts[1].name} exercises={parts[1].exercises} />
       <Part part={parts[2].name} exercises={parts[2].exercises} />
+      <Part part={parts[3].name} exercises={parts[3].exercises} />
     </div>
   )
 }
 
-const Total = ({value1, value2, value3}) => {
+const Total = ({value1, value2, value3, value4}) => {
   return (
-    <p>Number of exercises {value1 + value2 + value3}</p>
+    <p>Number of exercises {value1 + value2 + value3 +value4}</p>
   )
 }
 
@@ -33,7 +34,7 @@ const Course = ({course}) => {
     <div>
       <Header course={course.name} />
       <Content parts={course.parts}/>
-      <Total value1={course.parts[0].exercises} value2={course.parts[1].exercises} value3={course.parts[2].exercises} />
+      <Total value1={course.parts[0].exercises} value2={course.parts[1].exercises} value3={course.parts[2].exercises} value4={course.parts[3].exercises}/>
     </div>
   )
 }
@@ -53,6 +54,10 @@ const App = () => {
       {
         name: 'State of a component',
         exercises: 14
+      },
+      {
+        name: 'Redux',
+        exercises: 11
       }
     ]
   }
